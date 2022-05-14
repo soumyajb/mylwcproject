@@ -1,0 +1,73 @@
+<template>
+    <lightning-card > 
+        <template if:true={renderTemplate}>
+                <template if:false={showFieldChooser}>
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                    <thead>
+                    <tr>
+                        <template for:each={columnObject} for:item="item" > 
+                            <th draggable="true" key={item.Id}>{item.name}</th>
+                        </template>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                        <template for:each={finalData} for:item="item">
+                                 <tr  key={item} >
+                                <template for:each={item} for:item="curritem">
+                                    
+                                    <td  key={curritem}> {curritem} </td>
+                                </template>
+                                 </tr>
+                                <!--<tr class= {item.rowclass} key={item} >
+                                         <td class= {item.cellclass} key= {row}>insideItem</td> 
+                                 </tr>-->
+                            
+                            
+                        </template>
+                    </tbody>
+                    </table> 
+                </template>
+                <template if:true={showFieldChooser}>
+                        <section role="dialog" tabindex="-1" aria-label="Meaningful description of the modal content" aria-modal="true" class="slds-modal slds-fade-in-open">
+                            <div class="slds-modal__container">
+                            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" >
+                            <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                            <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                            </svg>
+                            <span class="slds-assistive-text">Cancel and close</span>
+                            </button>
+                            <div class="slds-modal__content slds-p-around_medium slds-modal__content_headless" id="modal-content-id-1">
+                            <lightning-dual-listbox name="Choose the fields to show"
+                            label="Field Chooser"
+                            source-label="Available"
+                            selected-label="Selected"
+                            field-level-help="Select your fields to show"
+                            options={fieldoptions}
+                            onchange={changedfieldchooser}></lightning-dual-listbox>
+                            <div class="slds-modal__footer">
+                            <button class="slds-button slds-button_neutral" aria-label="Cancel and close">Cancel</button>
+                            <button class="slds-button slds-button_brand">Save</button>
+                            </div>
+                            </div>
+                        </div>
+                        </section>
+                        <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+                </template>
+      
+        
+    
+      <lightning-button data-my-id="fieldchooser" icon-name="utility:settings" onclick={openFieldChooser}></lightning-button>
+      <!--{populateRows}-->
+    </template>
+    <template if:false={renderTemplate}>
+        <div class="exampleHolder">
+            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+        </div>
+    </template>
+
+    
+    
+    </lightning-card>
+  
+</template>
