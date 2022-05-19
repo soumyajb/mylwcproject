@@ -1,9 +1,9 @@
 <template>
     <lightning-card >
         <template if:true={showtable}>
-            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
                 <thead>
-                    <tr>
+                    <tr >
                         <template for:each={headerObject} for:item="headerItem">
                             <td key={headerItem.index}>{headerItem.key}</td>
                         </template>
@@ -12,10 +12,12 @@
                 </thead>
                 <tbody>   
                     <template for:each={bodyObject} for:item = "bodyItem">
-                        <tr key={bodyitem.Id}>
+                        <tr key={bodyItem.id} >
+                            
                             <template for:each={bodyItem.values} for:item="rowofrow">
-                                {rowofrow.value}     
-                            </template>                         
+                                <td key={rowofrow.key} > {rowofrow.value} </td>                                    
+                            </template>  
+                                             
                         </tr>
                     </template>       
                     
@@ -39,7 +41,8 @@
                                 selected-label="Selected"
                                 field-level-help="Fields chosen will be shown on the table"
                                 options={availableFields}
-                                onchange={handleChange}>
+                                onchange={handlechange}
+                                value={fieldsChosen}>
                     </lightning-dual-listbox>
             </div>
             <div class="slds-modal__footer">
@@ -53,5 +56,9 @@
         <template if:false={showFieldChooserWindow}>
             <lightning-button icon-name="utility:settings" alternative-text="Choose Field" title="Field Chooser" onclick={openFieldChooser} ></lightning-button>
         </template>
+        <template if:true={showSpinner}>
+            <lightning-spinner alternative-text="Please wait while we load the data" variant="brand" size="large"></lightning-spinner>
+        </template>
+        
     </lightning-card>
 </template>

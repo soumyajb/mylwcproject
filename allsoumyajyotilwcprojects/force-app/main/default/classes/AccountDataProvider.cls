@@ -9,11 +9,11 @@ public with sharing class AccountDataProvider {
                     {
                             
                             if(Fields.size()==0)
-                            accountdetails= [SELECT Name,Id,Phone,Website from Account  LIMIT 10];
+                            accountdetails= [SELECT name,id,phone,website from Account  LIMIT 10];
                             else
                             {
                                 
-                                    String querylIST = 'SELECT Id,';
+                                    String querylIST = 'SELECT id,';
                                 for(String field:Fields)
                                 {
 
