@@ -151,6 +151,7 @@ export default class Customizabledatatable extends LightningElement {
     {
         
         this.showtable=true;
+        this.showSpinner=false;
         this.showFieldChooserWindow=false;
     }
     handlechange(event)
