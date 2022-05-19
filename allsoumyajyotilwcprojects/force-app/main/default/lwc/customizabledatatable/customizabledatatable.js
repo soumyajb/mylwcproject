@@ -17,18 +17,18 @@ export default class Customizabledatatable extends LightningElement {
     ];
     fieldsChosen = [];
     fieldsChosenAPI = [];
-    currentConfig = JSON.parse(localStorage.getItem('previousConfig'));
+    currentConfig = [];
     //console.log(typeof currentConfig);
     
     showtable =false;
     showFieldChooserWindow =false;
     showSpinner = false;
     initdone=false;
+    configupdate=true;
     
     showUpdatedFields(event)
     {
-        localStorage.setItem('previousConfig', JSON.stringify(this.fieldsChosen));
-        console.log(localStorage.getItem('previousConfig'));
+        
         this.bodyObject=[];
         this.headerObject = [];
         this.showtable =false;
@@ -108,7 +108,12 @@ export default class Customizabledatatable extends LightningElement {
         })
         
     }
-
+    triggerUpdateField()
+    {
+        let populateEvent = new CustomEvent('triggerpopulate',{detail:{eventtrigger:'triggerUpdateField'}});
+        this.dispatchEvent(populateEvent);
+    }
+    
 
 
     openFieldChooser(event){
@@ -144,35 +149,24 @@ export default class Customizabledatatable extends LightningElement {
     }
     cancelModal(event)
     {
-        //console.log('Cancelled the choice');
+        
+        this.showtable=true;
         this.showFieldChooserWindow=false;
     }
     handlechange(event)
     {
-        //console.clear();
+    
         try {
             let data = event.detail.value;
-            //console.log(JSON.stringify(data));   
-            //this.fieldsChosenAPI =         
+            this.configupdate=true;          
             this.fieldsChosen = [...data];
-            // data.forEach(element=>{
-            //     Array.from(JSON.parse(JSON.stringify(this.availableFields))).forEach(labelmap=>{
-            //         //console.log(`The value of element is ${element} and the label map ${labelmap.label} and the name is${labelmap.value}`)
-            //         if(element === labelmap.name)
-            //         {
-            //             this.fieldsChosenAPI.push(labelmap.value);
-            //             //console.log(`Added the ${labelmap.value} to fieldsChosenAPI`);
-            //         }
-            //     })
-                
-
-            // })
+           
             
 
         }
         catch(e)
         {
-            //console.log(error);
+            
             let errorEvent = new ShowToastEvent({
                 title: 'Error occured',
                 message:
@@ -186,30 +180,61 @@ export default class Customizabledatatable extends LightningElement {
         
 
     }
-    renderedCallback() {
-        try{
-            console.log(typeof this.currentConfig);
-            if(this.currentConfig.length !=null)
-            {
-                console.log('Existing config exists');
-                //this.currentConfig.split(',')
-                this.fieldsChosen  =  [...Array.from(this.currentConfig)];
-            }else
-            {
-                this.fieldsChosen = ['name','phone','email','website'];
+    
+
+
+
+        connectedCallback()
+    {
+        this.addEventListener("triggerpopulate",this.ontriggerPopulate,false)
+        const triggerpoint = "connectedCallback";
+        let populateEvent = new CustomEvent('triggerpopulate',{detail:{eventtrigger:triggerpoint}});
+        this.dispatchEvent(populateEvent);
+    }
+        ontriggerPopulate(event)
+        {
+            let eventstring= JSON.stringify(event.detail['eventtrigger']);
+            console.log(`Trigger Populate is called from ${eventstring}`);
+            try{
+                    if(eventstring === "\"connectedCallback\"")
+                    {
+                        //console.log(`The details  : ${localStorage.getItem('previousConfig')}`);
+                        try{
+                            this.currentConfig = JSON.parse(localStorage.getItem('previousConfig'));
+                            console.log(this.currentConfig);
+                            if(this.currentConfig != null)
+                            {
+                                console.log('Existing config exists');
+                                //this.currentConfig.split(',')
+                                this.fieldsChosen  =  [...Array.from(this.currentConfig)];
+                            }else
+                            {
+                                this.fieldsChosen = ['name','phone','email','website'];
+                            }
+                            this.showUpdatedFields();
+                        }
+                            catch(e)
+                            {
+                                console.log(e);
+                            }
+                    }
+                    if(eventstring === "\"triggerUpdateField\"")
+                    {
+                        localStorage.setItem('previousConfig', JSON.stringify(this.fieldsChosen));
+                        console.log(localStorage.getItem('previousConfig'));
+                        this.showUpdatedFields();
+                    }
+                
+                
+            
+                
+                
+           
+            
             }
-        if(!this.initdone)
-        {
-            this.initdone =true;
-            this.showUpdatedFields();
-        }
-        
-        }
-        catch(e)
-        {
-                console.log(e);
-        }
-        
-        
+            catch(e)
+            {
+                    console.log(e);
+            }
         }
 }
